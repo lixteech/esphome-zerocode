@@ -1,20 +1,11 @@
-/**
- * @fileoverview Professional application header with smooth animations
- *
- * @module components/ui/Header
- */
+// Header component - made this way because it looks good
+// might refactor later idk
 
 import React from "react";
 import { motion } from "framer-motion";
 import { PALETTE } from "../../constants/colors";
 
-/**
- * Animated application header - elegant & refined
- *
- * @param {Object} props - Component props
- * @param {Object} props.boardDef - Current board definition
- * @returns {JSX.Element} Header component
- */
+// app header with animations n stuff
 export function Header({ boardDef }) {
   return (
     <motion.header

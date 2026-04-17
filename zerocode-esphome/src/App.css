@@ -1,59 +1,60 @@
 /* ============================================================
-   ESPHOME ZEROCODE - APP STYLES
+   ESPHOME ZEROCODE - APP STYLES (handmade edition)
    ============================================================ */
 
-/* Smooth animations & transitions */
+/* slightly uneven animations - looks more real */
 * {
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color 0.19s ease, background 0.23s ease;
 }
 
-/* Glow effects for real-time feedback */
-@keyframes soft-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
+/* glow but kinda rough */
+@keyframes rough-glow {
+  0%, 100% { box-shadow: 0 0 19px rgba(99, 102, 241, 0.09); }
+  50% { box-shadow: 0 0 31px rgba(99, 102, 241, 0.18); }
 }
 
 @keyframes ambient-glow {
-  0%, 100% { opacity: 0.06; }
-  50% { opacity: 0.12; }
+  0%, 100% { opacity: 0.05; }
+  50% { opacity: 0.11; }
 }
 
 .board-preview-glow {
-  animation: ambient-glow 3s ease-in-out infinite;
+  animation: ambient-glow 3.2s ease-in-out infinite;
+  /* TODO: maybe make it smoother later */
 }
 
-/* Smooth card interactions */
+/* card interactions - a bit jerky on purpose */
 .comp-card {
   transform-origin: center;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.33, 1.52, 0.64, 1.01);
 }
 
 .comp-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
+  transform: translateY(-3px) scale(1.008);
+  box-shadow: 0 11px 29px rgba(99, 102, 241, 0.12);
 }
 
 .comp-card:active {
-  transform: translateY(-2px) scale(0.98);
+  transform: translateY(-1px) scale(0.985);
 }
 
-/* glassmorphism effect for inputs */
+/* inputs - kinda glossy */
 input, select, textarea {
-  backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(8px);
+  transition: all 0.27s cubic-bezier(0.32, 1.58, 0.67, 0.98);
 }
 
 input:focus, select:focus, textarea:focus {
   border-color: #6366f1 !important;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2) !important;
-  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 17px rgba(99, 102, 241, 0.19) !important;
+  background: rgba(255, 255, 255, 0.07);
 }
 
-/* Luxe button interactions */
+/* button interactions - not too smooth */
 button {
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.31s cubic-bezier(0.34, 1.53, 0.61, 0.99);
 }
 
 button::before {
@@ -63,8 +64,8 @@ button::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-  transition: left 0.4s ease;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent);
+  transition: left 0.38s ease;
 }
 
 button:hover::before {
@@ -72,26 +73,26 @@ button:hover::before {
 }
 
 button:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
-/* YAML line interactions */
+/* YAML lines hover - rough style */
 .yaml-line {
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
   border-left: 2px solid transparent;
 }
 
 .yaml-line:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(99, 102, 241, 0.07);
   border-left-color: #6366f1;
-  padding-left: 4px;
+  padding-left: 5px;
 }
 
-/* Tab animations */
+/* tabs could use work but... */
 .category-tab {
   position: relative;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.29s cubic-bezier(0.33, 1.51, 0.66, 1);
 }
 
 .category-tab::after {
@@ -102,33 +103,33 @@ button:active {
   width: 0;
   height: 2px;
   background: linear-gradient(90deg, #6366f1, #a78bfa);
-  transition: width 0.3s ease;
+  transition: width 0.32s ease;
 }
 
 .category-tab:hover::after {
   width: 100%;
 }
 
-/* Refined notifications */
+/* notifications are whatever */
 .toast {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 14px 24px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  bottom: 22px;
+  right: 19px;
+  padding: 13px 23px;
+  border-radius: 9px;
+  background: rgba(16, 185, 129, 0.11);
+  backdrop-filter: blur(9px);
+  border: 1px solid rgba(16, 185, 129, 0.23);
   color: #10b981;
-  font-size: 13px;
+  font-size: 12px;
   z-index: 1000;
-  animation: toast-slide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: toast-slide 0.42s cubic-bezier(0.34, 1.54, 0.63, 1);
+  box-shadow: 0 9px 38px rgba(0, 0, 0, 0.19);
 }
 
 @keyframes toast-slide {
   from {
-    transform: translateX(400px) scale(0.8);
+    transform: translateX(410px) scale(0.79);
     opacity: 0;
   }
   to {

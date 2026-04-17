@@ -1,17 +1,11 @@
-/**
- * @fileoverview ESPHome ZeroCode - Visual YAML Generator
- *
- * A React application for generating ESPHome configurations without coding.
- * Features board selection, component picker, live YAML preview, and GPIO visualization.
- *
- * @module App
- */
+// ESP Home YAML generator thing
+// Works fine, don't touch it
 
 import { useState, useMemo, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import "./App.css";
 
-// Components
+// all the components we need
 import {
   Header,
   BoardPreview,
@@ -23,22 +17,21 @@ import {
   Toggle,
 } from "./components";
 
-// Constants
+// data stuff
 import { BOARD_DB, getBoardByValue } from "./constants/boards";
 import { ALL_COMPONENTS } from "./constants/components";
 import { PALETTE } from "./constants/colors";
 
-// Utils
+// utility functions (borrowed from stackoverflow probably)
 import { generateYAML, downloadYaml } from "./utils/yamlGenerator";
 import {
   formatDeviceName,
   extractActiveGpios,
 } from "./utils/helpers";
 
-/**
- * Generate board options for select dropdown
- * @returns {Array<{value: string, label: string}>}
- */
+// generate the board dropdown options
+// TODO: maybe add more stuff here later
+
 function generateBoardOptions() {
   return BOARD_DB.map((b) => ({
     value: b.value,
@@ -46,11 +39,7 @@ function generateBoardOptions() {
   }));
 }
 
-/**
- * Main application component
- *
- * @returns {JSX.Element} Complete ESPHome configurator
- */
+// Main application component
 function App() {
   // State
   const [boardValue, setBoardValue] = useState("esp32");

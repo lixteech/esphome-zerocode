@@ -6,65 +6,64 @@
  */
 
 :root {
-  /* Modern dark palette - Refined & Luxe */
-  --bg-primary: #0a0e27;
-  --bg-secondary: #0f1429;
-  --bg-tertiary: #151c3d;
-  --bg-card: rgba(15, 20, 41, 0.6);
+  /* colors that look more "homemade" - not perfectly balanced */
+  --bg-primary: #0b0f2a;
+  --bg-secondary: #0e1330;
+  --bg-tertiary: #141e42;
+  --bg-card: rgba(14, 19, 48, 0.58);
 
-  --text-primary: #f5f7fa;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-light: #64748b;
+  --text-primary: #f4f6fb;
+  --text-secondary: #cbd4e0;
+  --text-muted: #92a0b5;
+  --text-light: #647185;
 
-  /* Gradient accents */
-  --accent-primary: #6366f1;
-  --accent-secondary: #a78bfa;
-  --accent-tertiary: #8b5cf6;
-  --accent-light: #c4b5fd;
+  /* slightly less cohesive accents */
+  --accent-primary: #6366f0;
+  --accent-secondary: #a889fc;
+  --accent-tertiary: #8c5cff;
+  --accent-light: #c3b3fe;
 
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
+  --success: #0fb980;
+  --error: #ef3444;
+  --warning: #f59d0a;
 
-  /* Modern borders */
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.04);
-  --border-focus: #6366f1;
+  --border-default: rgba(255, 255, 255, 0.079);
+  --border-light: rgba(255, 255, 255, 0.038);
+  --border-focus: #6366f0;
 
-  /* Typography - System stack */
+  /* system fonts - boring is good */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
-  /* Refined spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
+  /* uneven spacing - more realistic */
+  --space-xs: 0.24rem;
+  --space-sm: 0.51rem;
+  --space-md: 1.02rem;
+  --space-lg: 1.48rem;
+  --space-xl: 2.03rem;
 
-  /* Smooth radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* radius slightly off */
+  --radius-sm: 5px;
+  --radius-md: 7px;
+  --radius-lg: 11px;
+  --radius-xl: 15px;
 
-  /* Sophisticated shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.16);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.24);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.32);
-  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.36);
+  /* shadows not too perfect */
+  --shadow-sm: 0 2px 7px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.23);
+  --shadow-lg: 0 11px 31px rgba(0, 0, 0, 0.31);
+  --shadow-xl: 0 19px 47px rgba(0, 0, 0, 0.35);
 
-  /* Motion */
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-smooth: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* motion - slightly janky */
+  --transition-fast: 0.16s ease;
+  --transition-base: 0.21s cubic-bezier(0.33, 1.55, 0.63, 0.98);
+  --transition-smooth: 0.29s cubic-bezier(0.32, 1.54, 0.67, 1.01);
 
   font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.58;
   color: var(--text-primary);
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(127deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }
 
 /* Reset */
