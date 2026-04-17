@@ -244,25 +244,25 @@ function Sidebar({
   return (
     <div
       style={{
-        borderRight: "1px solid rgba(255,255,255,0.05)",
+        borderRight: "1px solid rgba(139,92,246,.08)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: "rgba(6,11,20,0.7)",
+        background: "rgba(10,8,16,0.9)",
       }}
     >
       {/* Header */}
       <div
         style={{
           padding: "16px 20px 12px",
-          borderBottom: "1px solid rgba(255,255,255,0.04)",
+          borderBottom: "1px solid rgba(139,92,246,.08)",
           flexShrink: 0,
         }}
       >
         <div
           style={{
             fontSize: 11,
-            color: PALETTE.primary,
+            color: "#c4b5fd",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             marginBottom: 2,
@@ -271,7 +271,7 @@ function Sidebar({
           Configuration
         </div>
         <div
-          style={{ fontSize: 12, color: PALETTE.textDark }}
+          style={{ fontSize: 12, color: "#a8a0c4" }}
         >
           Generate ESPHome YAML without coding
         </div>
@@ -401,10 +401,11 @@ function Sidebar({
       <div
         style={{
           padding: "12px 20px",
-          borderTop: "1px solid rgba(255,255,255,0.05)",
+          borderTop: "1px solid rgba(139,92,246,.08)",
           display: "flex",
           gap: 8,
           flexShrink: 0,
+          background: "rgba(8,6,14,0.9)",
         }}
       >
         <ActionButton
@@ -520,11 +521,13 @@ function PreviewPanel({ boardDef, activeGpios }) {
     <div
       style={{
         position: "relative",
-        background: "#060c18",
+        background: "rgba(10,8,16,0.95)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        borderLeft: "1px solid rgba(139,92,246,.08)",
+        borderRight: "1px solid rgba(139,92,246,.08)",
       }}
     >
       {/* Title overlay */}
