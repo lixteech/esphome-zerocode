@@ -6,55 +6,56 @@
  */
 
 :root {
-  /* colors that look more "homemade" - not perfectly balanced */
-  --bg-primary: #0b0f2a;
-  --bg-secondary: #0e1330;
-  --bg-tertiary: #141e42;
-  --bg-card: rgba(14, 19, 48, 0.58);
+  /* Modern dark palette - Violet theme */
+  --bg-primary: #0a0810;
+  --bg-secondary: #0e0c18;
+  --bg-tertiary: #14101f;
+  --bg-card: rgba(14, 12, 24, 0.58);
 
-  --text-primary: #f4f6fb;
-  --text-secondary: #cbd4e0;
-  --text-muted: #92a0b5;
-  --text-light: #647185;
+  --text-primary: #f5f3fa;
+  --text-secondary: #d4c6e3;
+  --text-muted: #a89cc4;
+  --text-light: #7a6d8a;
 
-  /* slightly less cohesive accents */
-  --accent-primary: #6366f0;
-  --accent-secondary: #a889fc;
-  --accent-tertiary: #8c5cff;
-  --accent-light: #c3b3fe;
+  /* Vibrant violets */
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #a78bfa;
+  --accent-tertiary: #c4b5fd;
+  --accent-light: #ddd6fe;
 
-  --success: #0fb980;
-  --error: #ef3444;
-  --warning: #f59d0a;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
 
-  --border-default: rgba(255, 255, 255, 0.079);
-  --border-light: rgba(255, 255, 255, 0.038);
-  --border-focus: #6366f0;
+  /* Violet borders */
+  --border-default: rgba(139, 92, 246, 0.12);
+  --border-light: rgba(139, 92, 246, 0.06);
+  --border-focus: #8b5cf6;
 
-  /* system fonts - boring is good */
+  /* fonts */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
-  /* uneven spacing - more realistic */
+  /* spacing */
   --space-xs: 0.24rem;
   --space-sm: 0.51rem;
   --space-md: 1.02rem;
   --space-lg: 1.48rem;
   --space-xl: 2.03rem;
 
-  /* radius slightly off */
+  /* radius */
   --radius-sm: 5px;
   --radius-md: 7px;
   --radius-lg: 11px;
   --radius-xl: 15px;
 
-  /* shadows not too perfect */
-  --shadow-sm: 0 2px 7px rgba(0, 0, 0, 0.15);
-  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.23);
-  --shadow-lg: 0 11px 31px rgba(0, 0, 0, 0.31);
-  --shadow-xl: 0 19px 47px rgba(0, 0, 0, 0.35);
+  /* shadows */
+  --shadow-sm: 0 2px 7px rgba(139, 92, 246, 0.1);
+  --shadow-md: 0 4px 15px rgba(139, 92, 246, 0.15);
+  --shadow-lg: 0 11px 31px rgba(139, 92, 246, 0.2);
+  --shadow-xl: 0 19px 47px rgba(139, 92, 246, 0.25);
 
-  /* motion - slightly janky */
+  /* motion */
   --transition-fast: 0.16s ease;
   --transition-base: 0.21s cubic-bezier(0.33, 1.55, 0.63, 0.98);
   --transition-smooth: 0.29s cubic-bezier(0.32, 1.54, 0.67, 1.01);
@@ -63,7 +64,7 @@
   font-size: 14px;
   line-height: 1.58;
   color: var(--text-primary);
-  background: linear-gradient(127deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(127deg, #0a0810 0%, #0e0c18 50%, #140d22 100%);
 }
 
 /* Reset */

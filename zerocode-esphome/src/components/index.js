@@ -8,6 +8,8 @@ export { BoardPreview } from "./BoardPreview";
 export { CompPicker } from "./CompPicker";
 export { CompCard } from "./CompCard";
 export { YAMLViewer } from "./YAMLViewer";
+export { ResizablePanel } from "./ResizablePanel";
+export { EditableYAMLPanel } from "./EditableYAMLPanel";
 
 // Re-export form components
 export { Field, Select, Toggle } from "./Form";
