@@ -289,4 +289,4 @@ This project is under **MIT** license. See [LICENSE](LICENSE) for details.
 
 **Made with ❤️ for the ESPHome community** • [Visit the app](https://lixteech.github.io/esphome-zerocode/)
 
-![Views](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flixteech%2Fesphome-zerocode&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=views&edge_flat=false)
+![Views](https://komarev.com/ghpvc/?username=lixteech&repo=esphome-zerocode&color=green&label=VIEWS)
