@@ -15,6 +15,8 @@ import {
   Field,
   Select,
   Toggle,
+  ResizablePanel,
+  EditableYAMLPanel,
 } from "./components";
 
 // data stuff
@@ -39,6 +41,24 @@ function generateBoardOptions() {
   }));
 }
 
+// Format YAML with syntax highlighting
+function generateYAMLLines(yamlStr) {
+  return yamlStr.split('\n').map((line, idx) => {
+    const trimmed = line.trim();
+    let type = 'text';
+    
+    if (trimmed.startsWith('#')) type = 'comment';
+    else if (trimmed.includes(':')) type = 'key';
+    else if (trimmed.startsWith('-')) type = 'value';
+    
+    return {
+      text: line,
+      type,
+      num: idx + 1,
+    };
+  });
+}
+
 // Main application component
 function App() {
   // State
@@ -48,6 +68,7 @@ function App() {
   const [wifiPass, setWifiPass] = useState("");
   const [components, setComponents] = useState([]);
   const [services, setServices] = useState({ api: true, ota: true });
+  const [panelSize, setPanelSize] = useState(50);
 
   // Derived state with memoization
   const boardDef = useMemo(
@@ -98,6 +119,14 @@ function App() {
     window.open("https://web.esphome.io/", "_blank");
   }, []);
 
+  // Copy to clipboard handler
+  const [copied, setCopied] = useState(false);
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(yaml);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [yaml]);
+
   return (
     <div
       style={{
@@ -125,55 +154,63 @@ function App() {
 
       <Header boardDef={boardDef} />
 
-      {/* Main 3-column layout */}
-      <div
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "340px 1fr 420px",
-          height: "calc(100vh - 52px)",
-          overflow: "hidden",
-        }}
-      >
-        {/* Left column - Configuration Form */}
-        <Sidebar
-          boardValue={boardValue}
-          onBoardChange={setBoardValue}
-          boardOptions={boardOptions}
-          deviceName={deviceName}
-          onDeviceNameChange={setDeviceName}
-          wifiSsid={wifiSsid}
-          onWifiSsidChange={setWifiSsid}
-          wifiPass={wifiPass}
-          onWifiPassChange={setWifiPass}
-          services={services}
-          onServicesChange={setServices}
-          components={components}
-          onAddComponent={handleAddComponent}
-          onRemoveComponent={handleRemoveComponent}
-          onUpdateComponent={handleUpdateComponent}
-          onDownload={handleDownload}
-          onFlash={handleFlash}
-        />
+      {/* Main resizable 2-panel layout */}
+      <ResizablePanel
+        leftSize={panelSize}
+        onResize={setPanelSize}
+        left={
+          <Sidebar
+            boardValue={boardValue}
+            onBoardChange={setBoardValue}
+            boardOptions={boardOptions}
+            deviceName={deviceName}
+            onDeviceNameChange={setDeviceName}
+            wifiSsid={wifiSsid}
+            onWifiSsidChange={setWifiSsid}
+            wifiPass={wifiPass}
+            onWifiPassChange={setWifiPass}
+            services={services}
+            onServicesChange={setServices}
+            components={components}
+            onAddComponent={handleAddComponent}
+            onRemoveComponent={handleRemoveComponent}
+            onUpdateComponent={handleUpdateComponent}
+            onDownload={handleDownload}
+            onFlash={handleFlash}
+          />
+        }
+        right={
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 420px",
+              height: "100%",
+              width: "100%",
+              overflow: "hidden",
+            }}
+          >
+            {/* Center - Board Preview */}
+            <PreviewPanel
+              boardDef={boardDef}
+              activeGpios={activeGpios}
+            />
 
-        {/* Center column - Board Preview */}
-        <PreviewPanel
-          boardDef={boardDef}
-          activeGpios={activeGpios}
-        />
-
-        {/* Right column - YAML Output */}
-        <div
-          style={{
-            borderLeft: "1px solid rgba(255,255,255,0.05)",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <YAMLViewer yaml={yaml} deviceName={deviceName} />
-        </div>
-      </div>
+            {/* Right - Editable YAML */}
+            <EditableYAMLPanel
+              yaml={yaml}
+              onYAMLChange={(config) => {
+                if (config.deviceName) setDeviceName(config.deviceName);
+                if (config.wifiSsid) setWifiSsid(config.wifiSsid);
+                if (config.wifiPass) setWifiPass(config.wifiPass);
+              }}
+              lines={generateYAMLLines(yaml)}
+              copied={copied}
+              onCopy={handleCopy}
+              onDownload={handleDownload}
+            />
+          </div>
+        }
+      />
     </div>
   );
 }
