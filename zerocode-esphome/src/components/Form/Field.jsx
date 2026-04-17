@@ -1,57 +1,39 @@
 /**
- * @fileoverview Form input field component
+ * @fileoverview Form input field component - professional style
  *
  * @module components/Form/Field
  */
 
 import React from "react";
-import { FORM_COLORS } from "../../constants/colors";
+import { PALETTE } from "../../constants/colors";
 
 /**
- * Input field style configuration
+ * Label style - clean and minimal
+ * @type {Object}
+ */
+const LABEL_STYLE = {
+  fontSize: 13,
+  fontWeight: 500,
+  color: PALETTE.textSecondary,
+  marginBottom: 6,
+};
+
+/**
+ * Input style - professional clean inputs
  * @type {Object}
  */
 const INPUT_STYLE = {
-  background: FORM_COLORS.inputBackground,
-  border: `1px solid ${FORM_COLORS.inputBorder}`,
-  borderRadius: 8,
-  padding: "10px 14px",
-  color: FORM_COLORS.inputText,
+  background: PALETTE.surface,
+  border: `1px solid ${PALETTE.border}`,
+  borderRadius: 6,
+  padding: "10px 12px",
+  color: PALETTE.text,
   fontSize: 14,
   width: "100%",
   outline: "none",
   fontFamily: "inherit",
-  transition: "border-color 0.2s, box-shadow 0.2s",
+  transition: "border-color 0.15s, box-shadow 0.15s",
 };
-
-/**
- * Label style configuration
- * @type {Object}
- */
-const LABEL_STYLE = {
-  fontSize: 11,
-  color: FORM_COLORS.labelText,
-  letterSpacing: "0.07em",
-  textTransform: "uppercase",
-};
-
-/**
- * Focus handler for input styling
- * @param {React.FocusEvent<HTMLInputElement>} e - Focus event
- */
-function handleFocus(e) {
-  e.target.style.borderColor = FORM_COLORS.focusBorder;
-  e.target.style.boxShadow = FORM_COLORS.focusShadow;
-}
-
-/**
- * Blur handler for input styling
- * @param {React.FocusEvent<HTMLInputElement>} e - Blur event
- */
-function handleBlur(e) {
-  e.target.style.borderColor = FORM_COLORS.inputBorder;
-  e.target.style.boxShadow = "none";
-}
 
 /**
  * Form input field component
@@ -65,17 +47,19 @@ function handleBlur(e) {
  * @returns {JSX.Element} Field component
  */
 export function Field({ label, value, onChange, type = "text", placeholder }) {
+  const handleFocus = (e) => {
+    e.target.style.borderColor = PALETTE.primary;
+    e.target.style.boxShadow = "0 0 0 3px rgba(37, 99, 235, 0.1)";
+  };
+
+  const handleBlur = (e) => {
+    e.target.style.borderColor = PALETTE.border;
+    e.target.style.boxShadow = "none";
+  };
+
   return (
-    <label
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-      }}
-    >
-      {label && (
-        <span style={LABEL_STYLE}>{label}</span>
-      )}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {label && <label style={LABEL_STYLE}>{label}</label>}
       <input
         type={type}
         value={value || ""}
@@ -85,6 +69,6 @@ export function Field({ label, value, onChange, type = "text", placeholder }) {
         onFocus={handleFocus}
         onBlur={handleBlur}
       />
-    </label>
+    </div>
   );
 }

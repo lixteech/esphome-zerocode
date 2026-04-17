@@ -1,98 +1,138 @@
-/**
- * @fileoverview App-specific styles for ESPHome ZeroCode
- *
- * Component-specific styles that complement index.css
- */
+/* ============================================================
+   ESPHOME ZEROCODE - APP STYLES
+   ============================================================ */
 
-/**
- * Board preview SVG animation
- */
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.04;
-  }
-  50% {
-    opacity: 0.08;
-  }
+/* Smooth animations & transitions */
+* {
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+/* Glow effects for real-time feedback */
+@keyframes soft-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
+}
+
+@keyframes ambient-glow {
+  0%, 100% { opacity: 0.06; }
+  50% { opacity: 0.12; }
 }
 
 .board-preview-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: ambient-glow 3s ease-in-out infinite;
 }
 
-/**
- * Component card hover effect
- */
+/* Smooth card interactions */
 .comp-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transform-origin: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .comp-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
 }
 
-/**
- * Form input focus animation
- */
-input:focus,
-select:focus {
-  transition: border-color 0.2s, box-shadow 0.2s;
+.comp-card:active {
+  transform: translateY(-2px) scale(0.98);
 }
 
-/**
- * Button ripple effect
- */
+/* glassmorphism effect for inputs */
+input, select, textarea {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2) !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Luxe button interactions */
+button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+  transition: left 0.4s ease;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 
-/**
- * Code syntax highlighting extras
- */
+/* YAML line interactions */
 .yaml-line {
-  transition: background 0.15s;
+  position: relative;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
 }
 
 .yaml-line:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(99, 102, 241, 0.08);
+  border-left-color: #6366f1;
+  padding-left: 4px;
 }
 
-/**
- * Category tab animations
- */
+/* Tab animations */
 .category-tab {
-  transition: all 0.15s ease;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.category-tab:hover {
-  transform: translateY(-1px);
+.category-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #a78bfa);
+  transition: width 0.3s ease;
 }
 
-/**
- * Toast notification styles
- */
+.category-tab:hover::after {
+  width: 100%;
+}
+
+/* Refined notifications */
 .toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 14px 24px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(16, 185, 129, 0.25);
   color: #10b981;
   font-size: 13px;
   z-index: 1000;
-  animation: slide-in 0.3s ease;
+  animation: toast-slide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes slide-in {
+@keyframes toast-slide {
   from {
-    transform: translateX(100%);
+    transform: translateX(400px) scale(0.8);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
     opacity: 1;
   }
 }

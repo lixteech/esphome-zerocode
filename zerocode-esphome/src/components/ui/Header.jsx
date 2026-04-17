@@ -1,143 +1,138 @@
 /**
- * @fileoverview Application header with navigation and board info
+ * @fileoverview Professional application header with smooth animations
  *
  * @module components/ui/Header
  */
 
 import React from "react";
+import { motion } from "framer-motion";
 import { PALETTE } from "../../constants/colors";
 
 /**
- * Application header component
+ * Animated application header - elegant & refined
  *
  * @param {Object} props - Component props
  * @param {Object} props.boardDef - Current board definition
- * @param {string} props.boardDef.family - Board family name
- * @param {number} props.boardDef.pins - Number of pins
  * @returns {JSX.Element} Header component
  */
 export function Header({ boardDef }) {
   return (
-    <header
+    <motion.header
+      initial={{ y: -60, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
       style={{
-        height: 52,
+        height: 56,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0 20px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        background: "rgba(8,14,26,0.85)",
-        backdropFilter: "blur(16px)",
+        padding: "0 24px",
+        borderBottom: `1px solid rgba(255,255,255,0.08)`,
+        background: "rgba(10,14,39,0.6)",
+        backdropFilter: "blur(10px)",
         flexShrink: 0,
-        zIndex: 10,
       }}
     >
       {/* Logo section */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
+      <motion.div 
+        style={{ display: "flex", alignItems: "center", gap: 12 }}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
       >
-        <div
+        {/* Animated geometric logo */}
+        <motion.div
           style={{
-            width: 28,
-            height: 28,
-            borderRadius: 7,
-            background: "linear-gradient(135deg,#6366f1,#00e5ff)",
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: "linear-gradient(135deg, #6366f1, #a78bfa)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 0 16px rgba(99,102,241,0.45)",
-            fontSize: 14,
           }}
+          whileHover={{ scale: 1.05, rotate: 2 }}
+          transition={{ type: "spring", stiffness: 400 }}
         >
-          ⚡
-        </div>
-        <span
-          style={{
-            fontWeight: 700,
-            fontSize: 15,
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Zero
-          <span style={{ color: PALETTE.primary }}>Code</span>{" "}
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+        </motion.div>
+
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
           <span
             style={{
-              color: PALETTE.textDark,
-              fontWeight: 400,
-              fontSize: 13,
+              fontWeight: 600,
+              fontSize: 18,
+              color: PALETTE.text,
+              letterSpacing: "-0.01em",
             }}
           >
-            ESPHome
+            ZeroCode
           </span>
-        </span>
-        <span
-          style={{
-            marginLeft: 6,
-            padding: "2px 7px",
-            borderRadius: 100,
-            background: "rgba(99,102,241,0.1)",
-            border: "1px solid rgba(99,102,241,0.2)",
-            fontSize: 10,
-            color: PALETTE.accentBlue,
-            letterSpacing: "0.08em",
-          }}
-        >
-          BUILDER
-        </span>
-      </div>
+          <span
+            style={{
+              fontSize: 13,
+              color: PALETTE.textMuted,
+            }}
+          >
+            ESPHome Configurator
+          </span>
+        </div>
+      </motion.div>
 
-      {/* Board info and actions */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 11,
-            color: PALETTE.textDark,
-            fontFamily: "monospace",
-          }}
-        >
-          {boardDef?.family} · {boardDef?.pins} pins
-        </span>
+      {/* Right section */}
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        {boardDef && (
+          <span
+            style={{
+              fontSize: 13,
+              color: PALETTE.textSecondary,
+              fontFamily: "var(--font-mono)",
+              padding: "4px 10px",
+              background: PALETTE.bgTertiary,
+              borderRadius: 4,
+            }}
+          >
+            {boardDef.family} | {boardDef.pins} pins
+          </span>
+        )}
 
         <button
-          onClick={() =>
-            window.open("https://web.esphome.io/", "_blank")
-          }
+          onClick={() => window.open("https://esphome.io/", "_blank")}
           style={{
-            padding: "6px 14px",
-            borderRadius: 7,
-            background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-            border: "none",
-            color: "white",
-            fontSize: 12,
+            padding: "8px 16px",
+            borderRadius: 6,
+            background: PALETTE.surface,
+            border: `1px solid ${PALETTE.border}`,
+            color: PALETTE.textSecondary,
+            fontSize: 13,
+            fontWeight: 500,
             cursor: "pointer",
-            fontWeight: 600,
-            boxShadow: "0 0 16px rgba(99,102,241,0.3)",
-            transition: "transform 0.2s, box-shadow 0.2s",
+            transition: "all 0.15s",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-1px)";
-            e.currentTarget.style.boxShadow =
-              "0 0 20px rgba(99,102,241,0.4)";
+            e.currentTarget.style.borderColor = PALETTE.primary;
+            e.currentTarget.style.color = PALETTE.primary;
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow =
-              "0 0 16px rgba(99,102,241,0.3)";
+            e.currentTarget.style.borderColor = PALETTE.border;
+            e.currentTarget.style.color = PALETTE.textSecondary;
           }}
         >
-          ⚡ Flash via Web
+          Documentation
         </button>
       </div>
-    </header>
+    </motion.header>
   );
 }
