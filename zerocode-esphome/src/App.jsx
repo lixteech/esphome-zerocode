@@ -686,7 +686,7 @@ function CompPicker({ onAdd }) {
         onMouseEnter={e=>e.currentTarget.style.background="rgba(99,102,241,.14)"}
         onMouseLeave={e=>e.currentTarget.style.background="rgba(99,102,241,.07)"}
       >
-        <span style={{fontSize:16}}>+</span> Ajouter un composant
+        <span style={{fontSize:16}}>+</span> Add Component
       </button>
       <AnimatePresence>
         {open && (
@@ -698,7 +698,7 @@ function CompPicker({ onAdd }) {
               borderRadius:12, boxShadow:"0 20px 60px rgba(0,0,0,.7)", overflow:"hidden",
             }}>
             <div style={{ padding:"10px 12px", borderBottom:"1px solid rgba(255,255,255,.05)" }}>
-              <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Rechercher..." style={{
+              <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search..." style={{
                 ...inp, padding:"7px 12px", fontSize:13, width:"100%", background:"rgba(255,255,255,.04)",
               }} />
             </div>
@@ -738,7 +738,7 @@ function CompPicker({ onAdd }) {
                   <span style={{ fontSize:10, padding:"2px 6px", borderRadius:4, background:"rgba(255,255,255,.04)", color:"#334155" }}>{def.bus}</span>
                 </button>
               ))}
-              {items.length === 0 && <div style={{padding:"20px",textAlign:"center",color:"#334155",fontSize:13}}>Aucun résultat</div>}
+              {items.length === 0 && <div style={{padding:"20px",textAlign:"center",color:"#334155",fontSize:13}}>No results</div>}
             </div>
           </motion.div>
         )}
@@ -908,7 +908,7 @@ export default function App() {
         <div style={{ borderRight:"1px solid rgba(255,255,255,.05)", display:"flex", flexDirection:"column", overflow:"hidden", background:"rgba(6,11,20,.7)" }}>
           <div style={{ padding:"16px 20px 12px", borderBottom:"1px solid rgba(255,255,255,.04)", flexShrink:0 }}>
             <div style={{ fontSize:11, color:"#6366f1", letterSpacing:".1em", textTransform:"uppercase", marginBottom:2 }}>Configuration</div>
-            <div style={{ fontSize:12, color:"#334155" }}>Génère du YAML ESPHome sans coder</div>
+            <div style={{ fontSize:12, color:"#334155" }}>Generate ESPHome YAML without coding</div>
           </div>
 
           <div style={{ flex:1, overflowY:"auto", padding:"16px 20px", display:"flex", flexDirection:"column", gap:20 }}>
@@ -918,15 +918,15 @@ export default function App() {
                 <span>⚙️</span> MODULE
               </div>
               <div style={{ display:"grid", gap:10 }}>
-                <Sel label="Carte" value={boardValue} onChange={setBoardValue} options={boardOptions} />
-                <Field label="Nom de l'appareil" value={deviceName} onChange={setDeviceName} placeholder="my-esp-device" />
+                <Sel label="Board" value={boardValue} onChange={setBoardValue} options={boardOptions} />
+                <Field label="Device Name" value={deviceName} onChange={setDeviceName} placeholder="my-esp-device" />
               </div>
             </section>
 
             {/* WiFi */}
             <section>
               <div style={{ fontSize:10, color:"#0ea5e9", letterSpacing:".1em", textTransform:"uppercase", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
-                <span>📶</span> WIFI
+                <span>📶</span> WiFi
                 {wifiSsid.length>2 && <div style={{ width:6,height:6,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b981",marginLeft:"auto" }} />}
               </div>
               <div style={{ display:"grid", gap:10 }}>
@@ -941,15 +941,15 @@ export default function App() {
                 <span>🛡️</span> SERVICES
               </div>
               <div style={{ display:"grid", gap:8 }}>
-                <Toggle label="Native API" desc="Pour Home Assistant (sans chiffrement)" value={services.api} onChange={v=>setServices(s=>({...s,api:v}))} />
-                <Toggle label="Over-the-Air" desc="Mises à jour sans fil (sans mot de passe)" value={services.ota} onChange={v=>setServices(s=>({...s,ota:v}))} />
+                <Toggle label="Native API" desc="For Home Assistant (no encryption)" value={services.api} onChange={v=>setServices(s=>({...s,api:v}))} />
+                <Toggle label="Over-the-Air" desc="Wireless updates (no password)" value={services.ota} onChange={v=>setServices(s=>({...s,ota:v}))} />
               </div>
             </section>
 
             {/* Components */}
             <section>
               <div style={{ fontSize:10, color:"#a78bfa", letterSpacing:".1em", textTransform:"uppercase", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
-                <span>🧩</span> COMPOSANTS
+                <span>🧩</span> COMPONENTS
                 <span style={{ marginLeft:"auto", background:"rgba(139,92,246,.12)", border:"1px solid rgba(139,92,246,.2)", borderRadius:100, padding:"1px 8px", fontSize:10, color:"#a78bfa" }}>
                   {components.length} / {ALL_COMPONENTS.length}
                 </span>
@@ -980,7 +980,7 @@ export default function App() {
               border:"1px solid rgba(139,92,246,.3)",
               color:"#c4b5fd", fontSize:12, fontFamily:"inherit", fontWeight:600,
               display:"flex",alignItems:"center",justifyContent:"center",gap:6,
-            }}>⚡ Flash Web</button>
+            }}>⚡ Flash Online</button>
           </div>
         </div>
 
@@ -988,7 +988,7 @@ export default function App() {
         <div style={{ position:"relative", background:"#060c18", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
           <div style={{ position:"absolute", top:14, left:"50%", transform:"translateX(-50%)", zIndex:5, textAlign:"center", pointerEvents:"none" }}>
             <div style={{ fontSize:11, color:"#1e3a5a", letterSpacing:".1em", textTransform:"uppercase" }}>{boardDef.family} Preview</div>
-            {activeGpios.length>0 && <div style={{ fontSize:10, color:"#00e5ff", fontFamily:"monospace", marginTop:3 }}>{activeGpios.length} GPIO actif{activeGpios.length>1?"s":""}</div>}
+            {activeGpios.length>0 && <div style={{ fontSize:10, color:"#00e5ff", fontFamily:"monospace", marginTop:3 }}>{activeGpios.length} GPIO active{activeGpios.length>1?"s":""}</div>}
           </div>
           <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center" }}>
             <BoardPreview boardDef={boardDef} activeGpios={activeGpios} />
@@ -1003,7 +1003,7 @@ export default function App() {
           <div style={{ padding:"12px 16px 10px", borderBottom:"1px solid rgba(255,255,255,.04)", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
             <div>
               <div style={{ fontSize:11, color:"#334155", letterSpacing:".08em", textTransform:"uppercase" }}>YAML Output</div>
-              <div style={{ fontSize:10, color:"#1e3a5a", fontFamily:"monospace", marginTop:2 }}>{lines.length} lignes</div>
+              <div style={{ fontSize:10, color:"#1e3a5a", fontFamily:"monospace", marginTop:2 }}>{lines.length} lines</div>
             </div>
             <div style={{ display:"flex", gap:6 }}>
               <button onClick={copy} style={{
@@ -1012,12 +1012,12 @@ export default function App() {
                 border: copied?"1px solid rgba(16,185,129,.35)":"1px solid rgba(255,255,255,.07)",
                 color: copied?"#10b981":"#475569", fontSize:11,
                 fontFamily:"inherit", display:"flex", alignItems:"center", gap:5, transition:"all .2s",
-              }}>{copied?"✓ Copié":"⎘ Copier"}</button>
+              }}>{copied?"✓ Copied":"⌘ Copy"}</button>
               <button onClick={download} style={{
                 padding:"5px 12px", borderRadius:6, cursor:"pointer",
                 background:"rgba(99,102,241,.08)", border:"1px solid rgba(99,102,241,.2)",
                 color:"#818cf8", fontSize:11, fontFamily:"inherit", display:"flex", alignItems:"center", gap:5,
-              }}>⬇ Sauver</button>
+              }}>⬇ Download</button>
             </div>
           </div>
 
