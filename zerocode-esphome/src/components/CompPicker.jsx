@@ -4,7 +4,7 @@
  * @module components/CompPicker
  */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useClickOutside } from "../hooks/useClickOutside";
 import {
@@ -12,39 +12,38 @@ import {
   searchComponents,
   getComponentsByCategory,
 } from "../constants/components";
-import { FORM_COLORS, PALETTE } from "../constants/colors";
+import { ThemeContext } from "../App";
 import { createComponentId } from "../utils/helpers";
 
 /**
  * Input style for search
  * @type {Object}
  */
-const SEARCH_STYLE = {
-  background: "rgba(255,255,255,0.04)",
-  border: `1px solid ${FORM_COLORS.inputBorder}`,
+const getSearchStyle = (colors) => ({
+  background: colors.surfaceLight,
+  border: `1px solid ${colors.border}`,
   borderRadius: 8,
   padding: "7px 12px",
   fontSize: 13,
   width: "100%",
   outline: "none",
-  color: FORM_COLORS.inputText,
+  color: colors.text,
   fontFamily: "inherit",
-};
+});
 
 /**
  * Category button style
  * @param {boolean} isActive - Whether this category is selected
+ * @param {Object} colors - Theme colors
  * @returns {Object} Style object
  */
-const getCategoryStyle = (isActive) => ({
+const getCategoryStyle = (isActive, colors) => ({
   padding: "4px 10px",
   borderRadius: 100,
   border: "none",
   cursor: "pointer",
-  background: isActive
-    ? "rgba(99,102,241,0.25)"
-    : "rgba(255,255,255,0.04)",
-  color: isActive ? PALETTE.primaryLight : PALETTE.textDark,
+  background: isActive ? colors.primaryBg : colors.surfaceLight,
+  color: isActive ? colors.primaryLight : colors.textSecondary,
   fontSize: 11,
   fontFamily: "inherit",
   transition: "all 0.15s",
@@ -58,6 +57,7 @@ const getCategoryStyle = (isActive) => ({
  * @returns {JSX.Element} Component picker
  */
 export function CompPicker({ onAdd }) {
+  const { colors } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState("temperature");
   const [query, setQuery] = useState("");
@@ -105,9 +105,9 @@ export function CompPicker({ onAdd }) {
           width: "100%",
           padding: "11px 16px",
           borderRadius: 10,
-          background: "rgba(99,102,241,0.07)",
-          border: "1px dashed rgba(99,102,241,0.35)",
-          color: PALETTE.accentBlue,
+          background: colors.primaryBg,
+          border: `1px dashed ${colors.primary}55`,
+          color: colors.primary,
           fontSize: 13,
           cursor: "pointer",
           fontFamily: "inherit",
@@ -118,10 +118,10 @@ export function CompPicker({ onAdd }) {
           transition: "all 0.2s",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = "rgba(99,102,241,0.14)";
+          e.currentTarget.style.background = colors.primaryBg + "20";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "rgba(99,102,241,0.07)";
+          e.currentTarget.style.background = colors.primaryBg;
         }}
       >
         <span style={{ fontSize: 16 }}>+</span> Add Component
@@ -140,10 +140,10 @@ export function CompPicker({ onAdd }) {
               left: 0,
               right: 0,
               zIndex: 200,
-              background: "#0c1524",
-              border: "1px solid rgba(99,102,241,0.25)",
+              background: colors.surface,
+              border: `1px solid ${colors.primary}40`,
               borderRadius: 12,
-              boxShadow: "0 20px 60px rgba(0,0,0,0.7)",
+              boxShadow: colors.shadow,
               overflow: "hidden",
             }}
           >
@@ -158,7 +158,7 @@ export function CompPicker({ onAdd }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search components..."
-                style={SEARCH_STYLE}
+                style={getSearchStyle(colors)}
                 autoFocus
               />
             </div>
@@ -178,7 +178,7 @@ export function CompPicker({ onAdd }) {
                   <button
                     key={cat.id}
                     onClick={() => setCategory(cat.id)}
-                    style={getCategoryStyle(cat.id === category)}
+                    style={getCategoryStyle(cat.id === category, colors)}
                   >
                     {cat.label}
                   </button>
@@ -232,7 +232,7 @@ export function CompPicker({ onAdd }) {
                   <div style={{ flex: 1 }}>
                     <div
                       style={{
-                        color: PALETTE.text,
+                        color: colors.text,
                         fontSize: 13,
                         fontWeight: 600,
                       }}
@@ -240,7 +240,7 @@ export function CompPicker({ onAdd }) {
                       {def.label}
                     </div>
                     <div
-                      style={{ color: PALETTE.textDark, fontSize: 11 }}
+                      style={{ color: colors.textSecondary, fontSize: 11 }}
                     >
                       {def.desc}
                     </div>
@@ -250,8 +250,8 @@ export function CompPicker({ onAdd }) {
                       fontSize: 10,
                       padding: "2px 6px",
                       borderRadius: 4,
-                      background: "rgba(255,255,255,0.04)",
-                      color: PALETTE.textDark,
+                      background: colors.surfaceLight,
+                      color: colors.textSecondary,
                       textTransform: "uppercase",
                     }}
                   >

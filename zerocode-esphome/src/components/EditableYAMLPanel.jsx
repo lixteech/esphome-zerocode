@@ -1,9 +1,8 @@
-// Enhanced YAML Editor with live editing support
-// Edit YAML and see live changes in the form
-
-import React from 'react';
+import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { parseYAMLToConfig } from '../utils/yamlParser';
+import { GRADIENTS } from '../constants/colors';
+import { ThemeContext } from '../App';
 
 export function EditableYAMLPanel({
   yaml,
@@ -13,23 +12,31 @@ export function EditableYAMLPanel({
   onCopy,
   onDownload,
 }) {
+  const { colors, yamlColors, theme } = useContext(ThemeContext);
   const [editMode, setEditMode] = React.useState(false);
   const [ymlText, setYmlText] = React.useState(yaml);
 
   const handleEdit = (newText) => {
     setYmlText(newText);
-    // Parse and apply changes
     const config = parseYAMLToConfig(newText);
     onYAMLChange?.(config);
+  };
+
+  const getLineColor = (type) => {
+    switch (type) {
+      case 'comment': return yamlColors.comment;
+      case 'key': return yamlColors.key;
+      case 'value': return yamlColors.string;
+      default: return yamlColors.plain;
+    }
   };
 
   return (
     <div
       style={{
-        borderLeft: '1px solid rgba(139,92,246,.08)',
         display: 'flex',
         flexDirection: 'column',
-        background: 'rgba(5,9,18,.8)',
+        background: colors.surface,
         overflow: 'hidden',
         height: '100%',
       }}
@@ -37,21 +44,21 @@ export function EditableYAMLPanel({
       {/* Header */}
       <div
         style={{
-          padding: '12px 16px 10px',
-          borderBottom: '1px solid rgba(139,92,246,.08)',
+          padding: '20px 24px 16px',
+          borderBottom: `1px solid ${colors.borderLight}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexShrink: 0,
-          background: 'rgba(10,8,16,0.8)',
+          background: colors.surface,
         }}
       >
         <div>
           <div
             style={{
-              fontSize: 11,
-              color: '#a8a0c4',
-              letterSpacing: '.08em',
+              fontSize: 12,
+              color: colors.primary,
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontWeight: 600,
             }}
@@ -60,9 +67,9 @@ export function EditableYAMLPanel({
           </div>
           <div
             style={{
-              fontSize: 10,
-              color: '#7a6d8a',
-              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: colors.textMuted,
+              fontFamily: "'JetBrains Mono', monospace",
               marginTop: 2,
             }}
           >
@@ -70,25 +77,26 @@ export function EditableYAMLPanel({
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           <motion.button
             onClick={() => setEditMode(!editMode)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             style={{
-              padding: '5px 12px',
-              borderRadius: 6,
+              padding: '8px 14px',
+              borderRadius: 10,
               cursor: 'pointer',
               background: editMode
-                ? 'rgba(139,92,246,.2)'
-                : 'rgba(139,92,246,.08)',
-              border: '1px solid rgba(139,92,246,.2)',
-              color: '#c4b5fd',
-              fontSize: 11,
+                ? colors.primaryBg
+                : colors.surfaceLight,
+              border: `1px solid ${editMode ? colors.primary : colors.border}`,
+              color: editMode ? colors.primary : colors.text,
+              fontSize: 12,
+              fontWeight: 500,
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
+              gap: 6,
             }}
           >
             ✏️ {editMode ? 'View' : 'Edit'}
@@ -99,25 +107,26 @@ export function EditableYAMLPanel({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             style={{
-              padding: '5px 12px',
-              borderRadius: 6,
+              padding: '8px 14px',
+              borderRadius: 10,
               cursor: 'pointer',
               background: copied
-                ? 'rgba(16,185,129,.12)'
-                : 'rgba(139,92,246,.08)',
+                ? colors.success + '20'
+                : colors.surfaceLight,
               border: copied
-                ? '1px solid rgba(16,185,129,.35)'
-                : '1px solid rgba(139,92,246,.2)',
-              color: copied ? '#10b981' : '#c4b5fd',
-              fontSize: 11,
+                ? `1px solid ${colors.success}40`
+                : `1px solid ${colors.border}`,
+              color: copied ? colors.success : colors.text,
+              fontSize: 12,
+              fontWeight: 500,
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
+              gap: 6,
               transition: 'all 0.2s',
             }}
           >
-            {copied ? '✓ Copied' : '⌘ Copy'}
+            {copied ? '✓ Copied' : '📋 Copy'}
           </motion.button>
 
           <motion.button
@@ -125,20 +134,21 @@ export function EditableYAMLPanel({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             style={{
-              padding: '5px 12px',
-              borderRadius: 6,
+              padding: '8px 14px',
+              borderRadius: 10,
               cursor: 'pointer',
-              background: 'rgba(139,92,246,.08)',
-              border: '1px solid rgba(139,92,246,.2)',
-              color: '#c4b5fd',
-              fontSize: 11,
+              background: colors.surfaceLight,
+              border: `1px solid ${colors.border}`,
+              color: colors.text,
+              fontSize: 12,
+              fontWeight: 500,
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
+              gap: 6,
             }}
           >
-            ⬇ Download
+            ⬇️ Download
           </motion.button>
         </div>
       </div>
@@ -146,34 +156,32 @@ export function EditableYAMLPanel({
       {/* Content */}
       <div style={{ flex: 1, overflow: 'hidden', display: 'flex' }}>
         {editMode ? (
-          // Edit mode
           <textarea
             value={ymlText}
             onChange={(e) => handleEdit(e.target.value)}
             style={{
               width: '100%',
               height: '100%',
-              background: 'rgba(4,8,16,.6)',
+              background: colors.surfaceLight,
               border: 'none',
-              color: '#c4b5fd',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12.5px',
-              lineHeight: '20px',
-              padding: '12px 14px',
+              color: colors.text,
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 13,
+              lineHeight: 1.6,
+              padding: '16px 18px',
               resize: 'none',
               outline: 'none',
             }}
           />
         ) : (
-          // View mode
           <div
             style={{
               width: '100%',
-              padding: '12px 0 20px 0',
-              background: 'rgba(4,8,16,.6)',
+              padding: '16px 0 20px 0',
+              background: colors.surfaceLight,
               overflowY: 'auto',
-              fontSize: '12.5px',
-              lineHeight: '20px',
+              fontSize: 13,
+              lineHeight: 1.6,
               flex: 1,
             }}
           >
@@ -182,26 +190,19 @@ export function EditableYAMLPanel({
                 key={i}
                 style={{
                   display: 'flex',
-                  paddingLeft: '14px',
-                  paddingRight: '14px',
-                  color:
-                    line.type === 'comment'
-                      ? '#7a6d8a'
-                      : line.type === 'key'
-                        ? '#a78bfa'
-                        : line.type === 'value'
-                          ? '#c4b5fd'
-                          : '#8b7fa0',
+                  paddingLeft: '18px',
+                  paddingRight: '18px',
+                  color: getLineColor(line.type),
                   transition: 'background 0.2s',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(139,92,246,.08)';
+                  e.currentTarget.style.background = colors.primaryBg;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <span style={{ opacity: 0.4, marginRight: 12, minWidth: 30 }}>
+                <span style={{ opacity: 0.3, marginRight: 14, minWidth: 32, color: colors.textMuted }}>
                   {i + 1}
                 </span>
                 <span>{line.text}</span>
@@ -214,30 +215,33 @@ export function EditableYAMLPanel({
       {/* Footer */}
       <div
         style={{
-          padding: '5px 14px',
-          borderTop: '1px solid rgba(139,92,246,.08)',
-          background: 'rgba(0,0,0,.3)',
+          padding: '10px 18px',
+          borderTop: `1px solid ${colors.borderLight}`,
+          background: colors.surface,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexShrink: 0,
-          fontSize: '10px',
-          color: '#7a6d8a',
-          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: colors.textMuted,
+          fontFamily: "'JetBrains Mono', monospace",
         }}
       >
-        <span>{yaml.split('').length} chars</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div
+        <span>{yaml.length} chars</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <motion.div
+            animate={{
+              boxShadow: [`0 0 5px ${colors.primary}`, `0 0 15px ${colors.primary}`, `0 0 5px ${colors.primary}`],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
             style={{
-              width: 5,
-              height: 5,
+              width: 6,
+              height: 6,
               borderRadius: '50%',
-              background: '#8b5cf6',
-              boxShadow: '0 0 5px #8b5cf6',
+              background: colors.primary,
             }}
           />
-          <span style={{ color: '#8b5cf6' }}>Valid</span>
+          <span style={{ color: colors.primary, fontWeight: 500 }}>Valid</span>
         </div>
       </div>
     </div>

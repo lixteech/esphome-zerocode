@@ -1,605 +1,376 @@
-// ESP Home YAML generator thing
-// Works fine, don't touch it
+// ESP Home YAML Generator - AI Mode with Modern Design
 
-import { useState, useMemo, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
+import { useState, useMemo, useCallback, createContext, useContext } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
-
-// all the components we need
-import {
-  Header,
-  BoardPreview,
-  CompPicker,
-  CompCard,
-  YAMLViewer,
-  Field,
-  Select,
-  Toggle,
-  ResizablePanel,
-  EditableYAMLPanel,
-} from "./components";
-
-// data stuff
-import { BOARD_DB, getBoardByValue } from "./constants/boards";
-import { ALL_COMPONENTS } from "./constants/components";
-import { PALETTE } from "./constants/colors";
-
-// utility functions (borrowed from stackoverflow probably)
+import { useAiGeneration } from "./hooks/useAiGeneration";
+import { THEMES, YAML_COLORS, GRADIENTS } from "./constants/colors";
+import { EditableYAMLPanel, AIPromptPanel } from "./components/index";
 import { generateYAML, downloadYaml } from "./utils/yamlGenerator";
-import {
-  formatDeviceName,
-  extractActiveGpios,
-} from "./utils/helpers";
 
-// generate the board dropdown options
-// TODO: maybe add more stuff here later
+export const ThemeContext = createContext();
 
-function generateBoardOptions() {
-  return BOARD_DB.map((b) => ({
-    value: b.value,
-    label: `[${b.family}] ${b.label}`,
-  }));
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState("dark");
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
+
+  const colors = THEMES[theme];
+  const yamlColors = YAML_COLORS[theme];
+
+  return (
+    <ThemeContext.Provider value={{ theme, colors, yamlColors, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
-// Format YAML with syntax highlighting
-function generateYAMLLines(yamlStr) {
+function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) throw new Error("useTheme must be used within ThemeProvider");
+  return context;
+}
+
+function generateYAMLLines(yamlStr, yamlColors) {
   return yamlStr.split('\n').map((line, idx) => {
     const trimmed = line.trim();
     let type = 'text';
-    
     if (trimmed.startsWith('#')) type = 'comment';
     else if (trimmed.includes(':')) type = 'key';
     else if (trimmed.startsWith('-')) type = 'value';
-    
-    return {
-      text: line,
-      type,
-      num: idx + 1,
-    };
+    return { text: line, type, num: idx + 1 };
   });
 }
 
-// Main application component
 function App() {
-  // State
-  const [boardValue, setBoardValue] = useState("esp32");
-  const [deviceName, setDeviceName] = useState("my-esp-device");
-  const [wifiSsid, setWifiSsid] = useState("");
-  const [wifiPass, setWifiPass] = useState("");
-  const [components, setComponents] = useState([]);
-  const [services, setServices] = useState({ api: true, ota: true });
-  const [panelSize, setPanelSize] = useState(50);
-
-  // Derived state with memoization
-  const boardDef = useMemo(
-    () => getBoardByValue(boardValue) || BOARD_DB[0],
-    [boardValue]
-  );
-
-  const config = useMemo(
-    () => ({
-      boardDef,
-      deviceName,
-      wifiSsid,
-      wifiPass,
-      components,
-      services,
-    }),
-    [boardDef, deviceName, wifiSsid, wifiPass, components, services]
-  );
-
-  const yaml = useMemo(() => generateYAML(config), [config]);
-  const activeGpios = useMemo(
-    () => extractActiveGpios(components),
-    [components]
-  );
-
-  const boardOptions = useMemo(() => generateBoardOptions(), []);
-
-  // Handlers
-  const handleAddComponent = useCallback((component) => {
-    setComponents((prev) => [...prev, component]);
-  }, []);
-
-  const handleRemoveComponent = useCallback((id) => {
-    setComponents((prev) => prev.filter((c) => c.id !== id));
-  }, []);
-
-  const handleUpdateComponent = useCallback((updated) => {
-    setComponents((prev) =>
-      prev.map((c) => (c.id === updated.id ? updated : c))
-    );
-  }, []);
-
-  const handleDownload = useCallback(() => {
-    downloadYaml(yaml, deviceName);
-  }, [yaml, deviceName]);
-
-  const handleFlash = useCallback(() => {
-    window.open("https://web.esphome.io/", "_blank");
-  }, []);
-
-  // Copy to clipboard handler
+  const aiGeneration = useAiGeneration();
+  const { colors, yamlColors, toggleTheme, theme } = useTheme();
   const [copied, setCopied] = useState(false);
+  const [showFlashModal, setShowFlashModal] = useState(false);
+
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(yaml);
+    navigator.clipboard.writeText(aiGeneration.generatedYaml);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [yaml]);
+  }, [aiGeneration.generatedYaml]);
+
+  const handleDownload = useCallback(() => {
+    downloadYaml(aiGeneration.generatedYaml, "ai-generated");
+  }, [aiGeneration.generatedYaml]);
+
+  const handleWebFlash = useCallback(() => {
+    setShowFlashModal(true);
+  }, []);
+
+  const handleFlashToWeb = useCallback(() => {
+    window.open("https://web.esphome.io/", "_blank");
+    setShowFlashModal(false);
+  }, []);
+
+  const yamlLines = useMemo(
+    () => generateYAMLLines(aiGeneration.generatedYaml, yamlColors),
+    [aiGeneration.generatedYaml, yamlColors]
+  );
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: PALETTE.background,
-        color: PALETTE.text,
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "'JetBrains Mono','Fira Code',monospace",
+        background: colors.background,
+        color: colors.text,
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
         overflow: "hidden",
-      }}
-    >
-      {/* Global styles */}
-      <style>{
-        `
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { width: 3px; height: 3px; }
-        ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.35); border-radius: 2px; }
-        input, select, button { font-family: inherit; }
-        input[type=password] { letter-spacing: 0.12em; }
-        select option { background: #0a1220; }
-        `
-      }</style>
-
-      <Header boardDef={boardDef} />
-
-      {/* Main resizable 2-panel layout */}
-      <ResizablePanel
-        leftSize={panelSize}
-        onResize={setPanelSize}
-        left={
-          <Sidebar
-            boardValue={boardValue}
-            onBoardChange={setBoardValue}
-            boardOptions={boardOptions}
-            deviceName={deviceName}
-            onDeviceNameChange={setDeviceName}
-            wifiSsid={wifiSsid}
-            onWifiSsidChange={setWifiSsid}
-            wifiPass={wifiPass}
-            onWifiPassChange={setWifiPass}
-            services={services}
-            onServicesChange={setServices}
-            components={components}
-            onAddComponent={handleAddComponent}
-            onRemoveComponent={handleRemoveComponent}
-            onUpdateComponent={handleUpdateComponent}
-            onDownload={handleDownload}
-            onFlash={handleFlash}
-          />
-        }
-        right={
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 420px",
-              height: "100%",
-              width: "100%",
-              overflow: "hidden",
-            }}
-          >
-            {/* Center - Board Preview */}
-            <PreviewPanel
-              boardDef={boardDef}
-              activeGpios={activeGpios}
-            />
-
-            {/* Right - Editable YAML */}
-            <EditableYAMLPanel
-              yaml={yaml}
-              onYAMLChange={(config) => {
-                if (config.deviceName) setDeviceName(config.deviceName);
-                if (config.wifiSsid) setWifiSsid(config.wifiSsid);
-                if (config.wifiPass) setWifiPass(config.wifiPass);
-              }}
-              lines={generateYAMLLines(yaml)}
-              copied={copied}
-              onCopy={handleCopy}
-              onDownload={handleDownload}
-            />
-          </div>
-        }
-      />
-    </div>
-  );
-}
-
-/**
- * Sidebar configuration panel
- *
- * @param {Object} props - Panel props
- */
-function Sidebar({
-  boardValue,
-  onBoardChange,
-  boardOptions,
-  deviceName,
-  onDeviceNameChange,
-  wifiSsid,
-  onWifiSsidChange,
-  wifiPass,
-  onWifiPassChange,
-  services,
-  onServicesChange,
-  components,
-  onAddComponent,
-  onRemoveComponent,
-  onUpdateComponent,
-  onDownload,
-  onFlash,
-}) {
-  const wifiIndicator = wifiSsid.length > 2;
-
-  return (
-    <div
-      style={{
-        borderRight: "1px solid rgba(139,92,246,.08)",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        background: "rgba(10,8,16,0.9)",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          padding: "16px 20px 12px",
-          borderBottom: "1px solid rgba(139,92,246,.08)",
-          flexShrink: 0,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 11,
-            color: "#c4b5fd",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            marginBottom: 2,
-          }}
-        >
-          Configuration
-        </div>
-        <div
-          style={{ fontSize: 12, color: "#a8a0c4" }}
-        >
-          Generate ESPHome YAML without coding
-        </div>
-      </div>
-
-      {/* Scrollable form content */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "16px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-        }}
-      >
-        {/* Board selection */}
-        <section>
-          <SectionHeader icon="⚙️" label="Module" />
-          <div style={{ display: "grid", gap: 10 }}>
-            <Select
-              label="Board"
-              value={boardValue}
-              onChange={onBoardChange}
-              options={boardOptions}
-            />
-            <Field
-              label="Device Name"
-              value={deviceName}
-              onChange={onDeviceNameChange}
-              placeholder="my-esp-device"
-            />
-          </div>
-        </section>
-
-        {/* WiFi settings */}
-        <section>
-          <SectionHeader
-            icon="📶"
-            label="WiFi"
-            indicator={wifiIndicator}
-          />
-          <div style={{ display: "grid", gap: 10 }}>
-            <Field
-              value={wifiSsid}
-              onChange={onWifiSsidChange}
-              placeholder="your_wifi_ssid"
-            />
-            <Field
-              value={wifiPass}
-              onChange={onWifiPassChange}
-              type="password"
-              placeholder="••••••••"
-            />
-          </div>
-        </section>
-
-        {/* Services */}
-        <section>
-          <SectionHeader icon="🛡️" label="Services" />
-          <div style={{ display: "grid", gap: 8 }}>
-            <Toggle
-              label="Native API"
-              desc="For Home Assistant (no encryption)"
-              value={services.api}
-              onChange={(v) =>
-                onServicesChange((s) => ({ ...s, api: v }))
-              }
-            />
-            <Toggle
-              label="Over-the-Air"
-              desc="Wireless updates (no password)"
-              value={services.ota}
-              onChange={(v) =>
-                onServicesChange((s) => ({ ...s, ota: v }))
-              }
-            />
-          </div>
-        </section>
-
-        {/* Components */}
-        <section>
-          <div
-            style={{
-              fontSize: 10,
-              color: "#a78bfa",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              marginBottom: 10,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <span>🧩</span> COMPONENTS
-            <span
-              style={{
-                marginLeft: "auto",
-                background: "rgba(139,92,246,0.12)",
-                border: "1px solid rgba(139,92,246,0.2)",
-                borderRadius: 100,
-                padding: "1px 8px",
-                fontSize: 10,
-                color: "#a78bfa",
-              }}
-            >
-              {components.length} / {ALL_COMPONENTS.length}
-            </span>
-          </div>
-
-          <AnimatePresence mode="popLayout">
-            {components.map((comp) => (
-              <CompCard
-                key={comp.id}
-                comp={comp}
-                onRemove={() => onRemoveComponent(comp.id)}
-                onChange={onUpdateComponent}
-              />
-            ))}
-          </AnimatePresence>
-
-          <CompPicker onAdd={onAddComponent} />
-        </section>
-      </div>
-
-      {/* Bottom actions */}
-      <div
-        style={{
-          padding: "12px 20px",
-          borderTop: "1px solid rgba(139,92,246,.08)",
-          display: "flex",
-          gap: 8,
-          flexShrink: 0,
-          background: "rgba(8,6,14,0.9)",
-        }}
-      >
-        <ActionButton
-          onClick={onDownload}
-          variant="secondary"
-          icon="⬇"
-        >
-          Export YAML
-        </ActionButton>
-
-        <ActionButton
-          onClick={onFlash}
-          variant="primary"
-          icon="⚡"
-        >
-          Flash Online
-        </ActionButton>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Section header with icon
- */
-function SectionHeader({ icon, label, indicator }) {
-  return (
-    <div
-      style={{
-        fontSize: 10,
-        color: PALETTE.primary,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        marginBottom: 10,
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-      }}
-    >
-      <span>{icon}</span> {label}
-      {indicator && (
-        <div
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: "50%",
-            background: PALETTE.success,
-            boxShadow: `0 0 6px ${PALETTE.success}`,
-            marginLeft: "auto",
-          }}
-        />
-      )}
-    </div>
-  );
-}
-
-/**
- * Action button component
- */
-function ActionButton({ children, onClick, variant, icon }) {
-  const isPrimary = variant === "primary";
-
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        flex: 1,
-        padding: 10,
-        borderRadius: 8,
-        cursor: "pointer",
-        background: isPrimary
-          ? "linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.15))"
-          : "rgba(99,102,241,0.08)",
-        border: isPrimary
-          ? "1px solid rgba(139,92,246,0.3)"
-          : "1px solid rgba(99,102,241,0.2)",
-        color: isPrimary ? "#c4b5fd" : PALETTE.primaryLight,
-        fontSize: 12,
-        fontFamily: "inherit",
-        fontWeight: isPrimary ? 600 : 400,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 6,
-        transition: "all 0.2s",
-      }}
-      onMouseEnter={(e) => {
-        if (isPrimary) {
-          e.currentTarget.style.background =
-            "linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.2))";
-        } else {
-          e.currentTarget.style.background = "rgba(99,102,241,0.12)";
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = isPrimary
-          ? "linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.15))"
-          : "rgba(99,102,241,0.08)";
-      }}
-    >
-      {icon} {children}
-    </button>
-  );
-}
-
-/**
- * Board preview center panel
- */
-function PreviewPanel({ boardDef, activeGpios }) {
-  const hasGpios = activeGpios.length > 0;
-
-  return (
-    <div
-      style={{
         position: "relative",
-        background: "rgba(10,8,16,0.95)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        borderLeft: "1px solid rgba(139,92,246,.08)",
-        borderRight: "1px solid rgba(139,92,246,.08)",
       }}
     >
-      {/* Title overlay */}
-      <div
-        style={{
-          position: "absolute",
-          top: 14,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 5,
-          textAlign: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 11,
-            color: "#1e3a5a",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-          }}
-        >
-          {boardDef?.family} Preview
-        </div>
-        {hasGpios && (
-          <div
-            style={{
-              fontSize: 10,
-              color: "#00e5ff",
-              fontFamily: "monospace",
-              marginTop: 3,
-            }}
-          >
-            {activeGpios.length} GPIO active
-            {activeGpios.length > 1 ? "s" : ""}
-          </div>
-        )}
-      </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: ${colors.border}; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: ${colors.primary}; }
+        input, select, button, textarea { font-family: inherit; }
+        textarea { resize: none; }
+      `}</style>
 
-      {/* SVG preview */}
+      {/* Background gradient glow */}
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "60vh",
+          background: GRADIENTS.glow,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Header */}
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        style={{
+          position: "relative",
+          zIndex: 10,
+          padding: "20px 32px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "space-between",
+          borderBottom: `1px solid ${colors.borderLight}`,
+          backdropFilter: "blur(20px)",
+          background: theme === "dark" ? "rgba(10, 10, 15, 0.8)" : "rgba(255, 255, 255, 0.8)",
         }}
       >
-        <BoardPreview
-          boardDef={boardDef}
-          activeGpios={activeGpios}
-        />
-      </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <motion.div
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 10,
+              background: GRADIENTS.primary,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 20,
+            }}
+          >
+            ⚡
+          </motion.div>
+          <div>
+            <h1
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                background: GRADIENTS.primary,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              ZeroCode ESPHome
+            </h1>
+            <p
+              style={{
+                fontSize: 12,
+                color: colors.textSecondary,
+                marginTop: 2,
+              }}
+            >
+              AI-Powered YAML Generator
+            </p>
+          </div>
+        </div>
 
-      {/* Board info footer */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <motion.button
+            onClick={toggleTheme}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 10,
+              border: `1px solid ${colors.border}`,
+              background: colors.surface,
+              color: colors.text,
+              fontSize: 14,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              transition: "all 0.2s",
+            }}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+            <span style={{ fontSize: 13, fontWeight: 500 }}>
+              {theme === "dark" ? "Light" : "Dark"}
+            </span>
+          </motion.button>
+        </div>
+      </motion.header>
+
+      {/* Main content */}
       <div
         style={{
-          position: "absolute",
-          bottom: 14,
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontSize: 10,
-          color: "#1e3a5a",
-          fontFamily: "monospace",
-          whiteSpace: "nowrap",
+          position: "relative",
+          zIndex: 5,
+          flex: 1,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 0,
+          overflow: "hidden",
         }}
       >
-        {boardDef?.label} · {boardDef?.platform}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{
+            borderRight: `1px solid ${colors.borderLight}`,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <AIPromptPanel
+            prompt={aiGeneration.prompt}
+            onPromptChange={aiGeneration.setPrompt}
+            isGenerating={aiGeneration.isGenerating}
+            onGenerate={aiGeneration.generateFromPrompt}
+            generatedYaml={aiGeneration.generatedYaml}
+            error={aiGeneration.error}
+            onClearError={aiGeneration.clearError}
+            onCopy={handleCopy}
+            onDownload={handleDownload}
+            onFlash={handleWebFlash}
+            validation={aiGeneration.validation}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <EditableYAMLPanel
+            yaml={aiGeneration.generatedYaml}
+            onYAMLChange={() => {}}
+            lines={yamlLines}
+            copied={copied}
+            onCopy={handleCopy}
+            onDownload={handleDownload}
+          />
+        </motion.div>
       </div>
+
+      {/* Flash Modal */}
+      <AnimatePresence>
+        {showFlashModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowFlashModal(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0, 0, 0, 0.7)",
+              backdropFilter: "blur(8px)",
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: colors.surface,
+                borderRadius: 20,
+                padding: 32,
+                maxWidth: 480,
+                width: "90%",
+                border: `1px solid ${colors.border}`,
+                boxShadow: colors.shadowGlow,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 48,
+                  textAlign: "center",
+                  marginBottom: 16,
+                }}
+              >
+                ⚡
+              </div>
+              <h2
+                style={{
+                  fontSize: 24,
+                  fontWeight: 700,
+                  textAlign: "center",
+                  marginBottom: 8,
+                  color: colors.text,
+                }}
+              >
+                Flash to Device
+              </h2>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: colors.textSecondary,
+                  textAlign: "center",
+                  marginBottom: 24,
+                  lineHeight: 1.6,
+                }}
+              >
+                You'll be redirected to the ESPHome Web Flasher. Make sure your device is connected via USB.
+              </p>
+              <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
+                <motion.button
+                  onClick={handleFlashToWeb}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    padding: "14px 24px",
+                    borderRadius: 12,
+                    border: "none",
+                    background: GRADIENTS.primary,
+                    color: "#fff",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Open Web Flasher
+                </motion.button>
+                <motion.button
+                  onClick={() => setShowFlashModal(false)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    padding: "14px 24px",
+                    borderRadius: 12,
+                    border: `1px solid ${colors.border}`,
+                    background: "transparent",
+                    color: colors.textSecondary,
+                    fontSize: 15,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Cancel
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-export default App;
+function AppWithProvider() {
+  return (
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  );
+}
+
+export default AppWithProvider;

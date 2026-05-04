@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173/esphome-zerocode/)",
+      "Bash(node -c /home/lixtechh/Documents/zerocode/zerocode-esphome/src/App.jsx)",
+      "Bash(curl -s http://localhost:5173/esphome-zerocode/src/main.jsx)",
+      "Bash(curl -s http://localhost:5173/esphome-zerocode/src/App.jsx)",
+      "Bash(curl -s http://localhost:5173)"
+    ]
+  }
+}

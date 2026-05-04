@@ -1,34 +1,90 @@
 /**
- * @fileoverview Professional color palette for ESPHome ZeroCode
- * Neutral, accessible colors without flashy gradients
- *
- * @module constants/colors
+ * @fileoverview Modern color palette with light/dark mode support
  */
 
-/**
- * YAML syntax highlighting - subtle professional colors
- * @type {Object<string, string>}
- */
-export const YAML_COLORS = {
-  comment: "#6b7280",      // Gray 500
-  key: "#2563eb",          // Blue 600
-  colon: "#9ca3af",        // Gray 400
-  string: "#059669",       // Emerald 600
-  bool: "#7c3aed",         // Violet 600
-  number: "#d97706",       // Amber 600
-  plain: "#1f2937",        // Gray 800
-  indent: "#d1d5db",         // Gray 300
-  dash: "#dc2626",         // Red 600
+export const THEMES = {
+  dark: {
+    background: "#0a0a0f",
+    surface: "#12121a",
+    surfaceLight: "#1a1a24",
+    text: "#f0f0f5",
+    textSecondary: "#a0a0b0",
+    textMuted: "#707080",
+    textLight: "#505060",
+    primary: "#8b5cf6",
+    primaryLight: "#a78bfa",
+    primaryDark: "#7c3aed",
+    primaryBg: "rgba(139, 92, 246, 0.1)",
+    secondary: "#06b6d4",
+    secondaryLight: "#22d3ee",
+    secondaryBg: "rgba(6, 182, 212, 0.1)",
+    success: "#10b981",
+    error: "#ef4444",
+    warning: "#f59e0b",
+    border: "rgba(139, 92, 246, 0.15)",
+    borderLight: "rgba(139, 92, 246, 0.08)",
+    shadow: "0 4px 20px rgba(0, 0, 0, 0.4)",
+    shadowGlow: "0 0 30px rgba(139, 92, 246, 0.15)",
+  },
+  light: {
+    background: "#f8fafc",
+    surface: "#ffffff",
+    surfaceLight: "#f1f5f9",
+    text: "#1e293b",
+    textSecondary: "#64748b",
+    textMuted: "#94a3b8",
+    textLight: "#cbd5e1",
+    primary: "#7c3aed",
+    primaryLight: "#8b5cf6",
+    primaryDark: "#6d28d9",
+    primaryBg: "rgba(124, 58, 237, 0.08)",
+    secondary: "#0891b2",
+    secondaryLight: "#06b6d4",
+    secondaryBg: "rgba(8, 145, 178, 0.08)",
+    success: "#059669",
+    error: "#dc2626",
+    warning: "#d97706",
+    border: "rgba(124, 58, 237, 0.15)",
+    borderLight: "rgba(124, 58, 237, 0.08)",
+    shadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+    shadowGlow: "0 0 30px rgba(124, 58, 237, 0.1)",
+  },
 };
 
-/**
- * Board family colors - muted professional tones
- * @typedef {Object} FamilyColors
- * @property {string} pcb - PCB background
- * @property {string} chip - Chip color
- * @property {string} accent - Accent color
- * @property {string} glow - Glow effect
- */
+// Default palette (dark theme)
+export const PALETTE = THEMES.dark;
+
+// Form-specific colors
+export const FORM_COLORS = {
+  inputBorder: "rgba(139, 92, 246, 0.15)",
+  inputText: "#f0f0f5",
+  labelText: "#a0a0b0",
+};
+
+export const YAML_COLORS = {
+  dark: {
+    comment: "#6b7280",
+    key: "#a78bfa",
+    colon: "#9ca3af",
+    string: "#34d399",
+    bool: "#f472b6",
+    number: "#fbbf24",
+    plain: "#e5e7eb",
+    indent: "#4b5563",
+    dash: "#f87171",
+  },
+  light: {
+    comment: "#6b7280",
+    key: "#7c3aed",
+    colon: "#9ca3af",
+    string: "#059669",
+    bool: "#db2777",
+    number: "#d97706",
+    plain: "#1f2937",
+    indent: "#d1d5db",
+    dash: "#dc2626",
+  },
+};
 
 export const FAMILY_COLORS = {
   "ESP32":    { pcb: "#374151", chip: "#1f2937", accent: "#3b82f6", glow: "#60a5fa" },
@@ -41,45 +97,9 @@ export const FAMILY_COLORS = {
   "ESP8285":  { pcb: "#374151", chip: "#1f2937", accent: "#65a30d", glow: "#84cc16" },
 };
 
-/**
- * Professional form colors - neutral grays with single blue accent
- * @type {Object<string, string>}
- */
-export const FORM_COLORS = {
-  inputBackground: "#ffffff",
-  inputBorder: "#d1d5db",
-  inputText: "#1f2937",
-  labelText: "#4b5563",
-  focusBorder: "#2563eb",
-  focusShadow: "0 0 0 3px rgba(37, 99, 235, 0.1)",
-  activeBackground: "#eff6ff",
-  accentPurple: "#2563eb",     // Single blue accent
-  accentBlue: "#3b82f6",
-  muted: "#9ca3af",
-};
-
-/**
- * Clean professional palette
- * @type {Object<string, string>}
- */
-export const PALETTE = {
-  background: "#f3f4f6",       // Gray 100 - light neutral
-  surface: "#ffffff",          // White
-  surfaceLight: "#f9fafb",     // Gray 50
-  bgTertiary: "#f3f4f6",       // Gray 100
-  text: "#111827",             // Gray 900
-  textSecondary: "#4b5563",    // Gray 600
-  textMuted: "#6b7280",        // Gray 500
-  textLight: "#9ca3af",        // Gray 400
-  primary: "#2563eb",          // Blue 600
-  primaryLight: "#3b82f6",     // Blue 500
-  primaryDark: "#1d4ed8",      // Blue 700
-  primaryBg: "#eff6ff",        // Blue 50
-  success: "#059669",          // Emerald 600
-  error: "#dc2626",            // Red 600
-  warning: "#d97706",          // Amber 600
-  border: "#e5e7eb",           // Gray 200
-  borderLight: "#f3f4f6",      // Gray 100
-  shadow: "0 1px 3px rgba(0,0,0,0.1)",
-  shadowMd: "0 4px 6px -1px rgba(0,0,0,0.1)",
+export const GRADIENTS = {
+  primary: "linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)",
+  primaryDark: "linear-gradient(135deg, #7c3aed 0%, #0891b2 100%)",
+  surface: "linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%)",
+  glow: "radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)",
 };
