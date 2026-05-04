@@ -11,6 +11,8 @@ export { YAMLViewer } from "./YAMLViewer";
 export { ResizablePanel } from "./ResizablePanel";
 export { EditableYAMLPanel } from "./EditableYAMLPanel";
 export { AIPromptPanel } from "./AIPromptPanel";
+export { SecretsPanel } from "./SecretsPanel";
+export { WebFlasher } from "./WebFlasher";
 
 // Re-export form components
 export { Field, Select, Toggle } from "./Form";

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 import { useAiGeneration } from "./hooks/useAiGeneration";
 import { THEMES, YAML_COLORS, GRADIENTS } from "./constants/colors";
-import { EditableYAMLPanel, AIPromptPanel } from "./components/index";
+import { EditableYAMLPanel, AIPromptPanel, SecretsPanel, WebFlasher } from "./components/index";
 import { generateYAML, downloadYaml } from "./utils/yamlGenerator";
 
 export const ThemeContext = createContext();
@@ -49,6 +49,20 @@ function App() {
   const { colors, yamlColors, toggleTheme, theme } = useTheme();
   const [copied, setCopied] = useState(false);
   const [showFlashModal, setShowFlashModal] = useState(false);
+  const [secrets, setSecrets] = useState({
+    wifiSsid: localStorage.getItem("esphome_wifi_ssid") || "",
+    wifiPass: localStorage.getItem("esphome_wifi_pass") || "",
+    apiKey: localStorage.getItem("esphome_api_key") || "",
+  });
+  const [webFlasherOpen, setWebFlasherOpen] = useState(false);
+
+  // Save secrets to localStorage
+  const handleSecretsChange = useCallback((newSecrets) => {
+    setSecrets(newSecrets);
+    localStorage.setItem("esphome_wifi_ssid", newSecrets.wifiSsid || "");
+    localStorage.setItem("esphome_wifi_pass", newSecrets.wifiPass || "");
+    localStorage.setItem("esphome_api_key", newSecrets.apiKey || "");
+  }, []);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(aiGeneration.generatedYaml);
@@ -61,7 +75,7 @@ function App() {
   }, [aiGeneration.generatedYaml]);
 
   const handleWebFlash = useCallback(() => {
-    setShowFlashModal(true);
+    setWebFlasherOpen(true);
   }, []);
 
   const handleFlashToWeb = useCallback(() => {
@@ -218,19 +232,27 @@ function App() {
             overflow: "hidden",
           }}
         >
-          <AIPromptPanel
-            prompt={aiGeneration.prompt}
-            onPromptChange={aiGeneration.setPrompt}
-            isGenerating={aiGeneration.isGenerating}
-            onGenerate={aiGeneration.generateFromPrompt}
-            generatedYaml={aiGeneration.generatedYaml}
-            error={aiGeneration.error}
-            onClearError={aiGeneration.clearError}
-            onCopy={handleCopy}
-            onDownload={handleDownload}
-            onFlash={handleWebFlash}
-            validation={aiGeneration.validation}
-          />
+          <div style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: 16 }}>
+              <SecretsPanel 
+                secrets={secrets}
+                onSecretsChange={handleSecretsChange}
+              />
+            </div>
+            <AIPromptPanel
+              prompt={aiGeneration.prompt}
+              onPromptChange={aiGeneration.setPrompt}
+              isGenerating={aiGeneration.isGenerating}
+              onGenerate={aiGeneration.generateFromPrompt}
+              generatedYaml={aiGeneration.generatedYaml}
+              error={aiGeneration.error}
+              onClearError={aiGeneration.clearError}
+              onCopy={handleCopy}
+              onDownload={handleDownload}
+              onFlash={handleWebFlash}
+              validation={aiGeneration.validation}
+            />
+          </div>
         </motion.div>
 
         <motion.div
@@ -361,6 +383,14 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Web Flasher */}
+      <WebFlasher
+        yaml={aiGeneration.generatedYaml}
+        deviceName="esphome-device"
+        isOpen={webFlasherOpen}
+        onClose={() => setWebFlasherOpen(false)}
+      />
     </div>
   );
 }
