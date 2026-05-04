@@ -233,12 +233,6 @@ function App() {
           }}
         >
           <div style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column" }}>
-            <div style={{ padding: 16 }}>
-              <SecretsPanel 
-                secrets={secrets}
-                onSecretsChange={handleSecretsChange}
-              />
-            </div>
             <AIPromptPanel
               prompt={aiGeneration.prompt}
               onPromptChange={aiGeneration.setPrompt}
@@ -252,6 +246,12 @@ function App() {
               onFlash={handleWebFlash}
               validation={aiGeneration.validation}
             />
+            <div style={{ padding: 16 }}>
+              <SecretsPanel 
+                secrets={secrets}
+                onSecretsChange={handleSecretsChange}
+              />
+            </div>
           </div>
         </motion.div>
 
