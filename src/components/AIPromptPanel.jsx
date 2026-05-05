@@ -16,10 +16,12 @@ export function AIPromptPanel({
   onDownload,
   onFlash,
   validation,
+  secrets,
 }) {
   const { colors, theme } = useContext(ThemeContext);
   const hasYaml = generatedYaml && generatedYaml.length > 0;
   const hasError = error && error.length > 0;
+  const hasSecrets = secrets?.wifiSsid && secrets?.wifiPass && secrets?.apiKey;
 
   return (
     <motion.div
@@ -154,6 +156,29 @@ export function AIPromptPanel({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {!hasSecrets && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              background: theme === "dark"
+                ? "rgba(251, 191, 36, 0.1)"
+                : "rgba(245, 158, 11, 0.08)",
+              border: `1px solid ${colors.warning}33`,
+              borderRadius: 10,
+              padding: "12px 14px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <span style={{ fontSize: 16 }}>🔐</span>
+            <span style={{ fontSize: 13, color: colors.warning }}>
+              Fill in your WiFi and API secrets below before generating
+            </span>
+          </motion.div>
+        )}
 
         <motion.button
           onClick={() => onGenerate(prompt)}

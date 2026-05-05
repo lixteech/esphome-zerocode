@@ -245,6 +245,7 @@ function App() {
               onDownload={handleDownload}
               onFlash={handleWebFlash}
               validation={aiGeneration.validation}
+              secrets={secrets}
             />
             <div style={{ padding: 16 }}>
               <SecretsPanel 
