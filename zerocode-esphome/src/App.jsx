@@ -168,7 +168,7 @@ function App() {
                 letterSpacing: "-0.5px",
               }}
             >
-              ZeroCode ESPHome
+              ZeroCode for ESPHome
             </h1>
             <p
               style={{
