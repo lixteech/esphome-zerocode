@@ -2,7 +2,7 @@
 
 > **L'IA qui transforme vos mots en hardware. Génération et flashage de firmware ESPHome en langage naturel.**
 
-[🚀 Accéder à l'application](esphome-zerocode.vercel.app)
+[🚀 Accéder à l'application](https://esphome-zerocode.vercel.app/)
 
 ---
 
