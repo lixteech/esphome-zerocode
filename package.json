@@ -5,7 +5,7 @@
   "homepage": "https://lixteech.github.io/esphome-zerocode",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/esphome-zerocode/",
+    "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
