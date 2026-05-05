@@ -237,7 +237,7 @@ function App() {
               prompt={aiGeneration.prompt}
               onPromptChange={aiGeneration.setPrompt}
               isGenerating={aiGeneration.isGenerating}
-              onGenerate={aiGeneration.generateFromPrompt}
+              onGenerate={(prompt) => aiGeneration.generateFromPrompt(prompt, { secrets })}
               generatedYaml={aiGeneration.generatedYaml}
               error={aiGeneration.error}
               onClearError={aiGeneration.clearError}

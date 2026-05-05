@@ -29,6 +29,7 @@ export async function generateConfig(prompt, options = {}) {
   const model = options.model || DEFAULT_MODEL;
   const maxTokens = options.maxTokens || DEFAULT_MAX_TOKENS;
   const systemPrompt = options.systemPrompt || buildSystemPrompt();
+  const secrets = options.secrets || {};
 
   if (!apiKey) {
     throw new Error("AI API key not configured");
@@ -82,7 +83,20 @@ export async function generateConfig(prompt, options = {}) {
       throw new Error("No content in API response");
     }
 
-    return parseAIResponse(content);
+    let yaml = parseAIResponse(content);
+
+    // Replace WiFi and API secrets if provided
+    if (secrets.wifiSsid) {
+      yaml = yaml.replace(/\[ssid\]/g, secrets.wifiSsid);
+    }
+    if (secrets.wifiPass) {
+      yaml = yaml.replace(/\[password\]/g, secrets.wifiPass);
+    }
+    if (secrets.apiKey) {
+      yaml = yaml.replace(/\[api_key\]/g, secrets.apiKey);
+    }
+
+    return yaml;
   } catch (error) {
     if (error.name === "TypeError" && error.message.includes("fetch")) {
       throw new Error("Network error - check your connection");

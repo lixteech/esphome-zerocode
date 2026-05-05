@@ -32,6 +32,7 @@ export function useAiGeneration(options = {}) {
       const yaml = await generateConfig(userPrompt, {
         ...generateOptions,
         signal: abortControllerRef.current.signal,
+        secrets: generateOptions.secrets || {},
       });
 
       const validationResult = validateYAML(yaml);
