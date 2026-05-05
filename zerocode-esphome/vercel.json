@@ -4,5 +4,11 @@
   "env": {
     "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
     "NPM_CONFIG_FORCE": "true"
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/esphome-zerocode/(.*)",
+      "destination": "/esphome-zerocode/index.html"
+    }
+  ]
 }
