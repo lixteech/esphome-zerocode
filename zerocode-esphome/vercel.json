@@ -2,6 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "installCommand": "npm install",
+  "devCommand": "vite",
   "env": [
     "VITE_AI_API_KEY"
   ]
