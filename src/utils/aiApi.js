@@ -127,6 +127,9 @@ wifi:
   password: "[password]"
 
 api:
+  encryption:
+    key: "[api_key]"
+
 ota:
   platform: esphome
 
@@ -134,7 +137,7 @@ logger:
 
 [optional component sections]
 
-EXAMPLE OUTPUT (copy this format exactly):
+EXAMPLE OUTPUT (copy this format exactly, using placeholders):
 esphome:
   name: my-sensor
   friendly_name: "My Sensor Device"
@@ -143,10 +146,13 @@ esp32:
   board: esp32dev
 
 wifi:
-  ssid: "home-network"
-  password: "password123"
+  ssid: "[ssid]"
+  password: "[password]"
 
 api:
+  encryption:
+    key: "[api_key]"
+
 ota:
   platform: esphome
 
@@ -168,6 +174,7 @@ Rules:
 - Include friendly_name in esphome section
 - Always include wifi, api, ota, and logger sections
 - Component sections (sensor, binary_sensor, switch, etc) go at the end
+- CRITICAL: Use "[ssid]", "[password]", and "[api_key]" as placeholders - these will be replaced with actual values
 
 PLATFORMS & COMPONENTS:
 - DHT11/DHT22: Use "platform: dht" with pin
@@ -178,7 +185,7 @@ PLATFORMS & COMPONENTS:
 - LED: Use "platform: ledc" or "platform: gpio" in light section
 - Display: Use "platform: ssd1306_i2c" or other i2c display
 
-REMEMBER: Output ONLY YAML. No markdown. No code blocks. No explanations.`;
+REMEMBER: Output ONLY YAML. No markdown. No code blocks. No explanations. Use "[ssid]", "[password]", and "[api_key]" placeholders.`;
 }
 
 export function parseAIResponse(response) {
