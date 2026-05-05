@@ -22,17 +22,15 @@ jobs:
           node-version: '22'
           
       - name: Install dependencies
-        working-directory: ./zerocode-esphome
         run: npm install
         
       - name: Build
-        working-directory: ./zerocode-esphome
         run: npm run build
         
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./zerocode-esphome/dist
+          publish_dir: ./dist
           cname: false
           force_orphan: true
